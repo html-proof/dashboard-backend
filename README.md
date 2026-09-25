@@ -47,7 +47,7 @@ legacy/       previous storefront-catalogue app (not used)
 
 ## API
 
-All `/api/*` routes need `Authorization: Bearer $DASHBOARD_API_KEY` when that variable is set, and production requires it.
+All `/api/*` routes need either a Shopify sign-in or `Authorization: Bearer $DASHBOARD_API_KEY`. With no key set, only signed-in stores get in; production requires the key.
 
 | Endpoint | Content |
 |---|---|

@@ -132,8 +132,27 @@ export function breakdowns(shop, { startDate, endDate }, limit = 10) {
   return {
     topProducts: productRows.map((row) => ({ productId: row.product_id, title: row.title, units: row.units, revenue: round(row.revenue) })),
     salesByChannel: channel.map((row) => ({ ...row, totalSales: round(row.totalSales) })),
-    salesByLocation: location.map((row) => ({ ...row, totalSales: round(row.totalSales) }))
+    salesByLocation: location.map((row) => ({ ...row, label: placeName(row.label), totalSales: round(row.totalSales) }))
   };
+}
+
+const REGION_NAMES = {
+  AU: { ACT: 'Australian Capital Territory', NSW: 'New South Wales', NT: 'Northern Territory', QLD: 'Queensland', SA: 'South Australia', TAS: 'Tasmania', VIC: 'Victoria', WA: 'Western Australia' }
+};
+const countryNames = new Intl.DisplayNames(['en'], { type: 'region' });
+
+function countryName(code) {
+  try { return countryNames.of(code) || code; } catch { return code; }
+}
+
+// Expands Shopify codes like "VIC, AU" / "AU" into "Victoria, Australia" / "Australia"; retail location names pass through.
+export function placeName(label) {
+  const match = /^(?:([A-Z0-9]{1,3}), )?([A-Z]{2})$/.exec(label ?? '');
+  if (!match) return label;
+  const [, province, country] = match;
+  const countryLabel = countryName(country);
+  if (!province) return countryLabel;
+  return `${REGION_NAMES[country]?.[province] ?? province}, ${countryLabel}`;
 }
 
 export function statusBreakdown(shop, { startDate, endDate }) {

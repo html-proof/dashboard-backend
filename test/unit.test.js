@@ -10,7 +10,7 @@ const SHOP = 'test-shop.myshopify.com';
 Object.assign(process.env, {
   NODE_ENV: 'test', LOG_SILENT: '1', SHOPIFY_CLIENT_ID: 'test-client', SHOPIFY_CLIENT_SECRET: SECRET, SHOPIFY_STORE: SHOP,
   SHOPIFY_ADMIN_DOMAIN: '', SHOPIFY_ADMIN_ACCESS_TOKEN: '', TOKEN_ENCRYPTION_KEY: randomBytes(32).toString('hex'),
-  APP_URL: 'http://localhost:0', DASHBOARD_API_KEY: ''
+  APP_URL: 'http://localhost:0', DASHBOARD_API_KEY: 'test-api-key'
 });
 
 const { db, localDate } = await import('../src/database/db.js');
@@ -225,18 +225,21 @@ test('14. Duplicate webhook deliveries are processed once', async () => {
 
 // ---- 16: dashboard API ---------------------------------------------------------------------
 test('16. Dashboard endpoints return live-shaped data, never secrets', async () => {
+  const auth = { headers: { authorization: 'Bearer test-api-key' } };
+  assert.equal((await realFetch(`${base}/api/dashboard/overview`)).status, 401, 'no key must be refused');
+  assert.equal((await realFetch(`${base}/api/dashboard/overview`, { headers: { authorization: 'Bearer wrong' } })).status, 401);
   const endpoints = ['overview', 'sales', 'orders', 'customers', 'products', 'inventory', 'refunds', 'fulfillment'];
   for (const name of endpoints) {
-    const response = await realFetch(`${base}/api/dashboard/${name}?start_date=2026-09-11&end_date=2026-09-13`);
+    const response = await realFetch(`${base}/api/dashboard/${name}?start_date=2026-09-11&end_date=2026-09-13`, auth);
     const text = await response.text();
     assert.equal(response.status, 200, `${name}: ${text}`);
     assert.ok(!/shpat_|test-secret|token_enc/.test(text), `${name} leaked a credential`);
   }
-  const sales = await (await realFetch(`${base}/api/dashboard/sales?start_date=2026-09-11&end_date=2026-09-13`)).json();
+  const sales = await (await realFetch(`${base}/api/dashboard/sales?start_date=2026-09-11&end_date=2026-09-13`, auth)).json();
   assert.equal(sales.summary.current.netSales, 230);
-  const bad = await realFetch(`${base}/api/dashboard/sales?preset=nope`);
+  const bad = await realFetch(`${base}/api/dashboard/sales?preset=nope`, auth);
   assert.equal(bad.status, 400);
-  const status = await (await realFetch(`${base}/api/status`)).text();
+  const status = await (await realFetch(`${base}/api/status`, auth)).text();
   assert.ok(!/shpat_|token_enc/.test(status));
 });
 
