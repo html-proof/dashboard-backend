@@ -68,7 +68,8 @@ function rateLimited(request, bucket, perMinute) {
 setInterval(() => { const now = Date.now(); for (const [key, entry] of windows) if (entry.reset < now) windows.delete(key); }, 60_000).unref();
 
 function authorised(request) {
-  if (!config.dashboardApiKey) return true;
+  // Fail closed: with no key configured, nobody gets in without a Shopify sign-in.
+  if (!config.dashboardApiKey) return false;
   const header = request.headers.authorization || '';
   return safeEqual(header.replace(/^Bearer\s+/i, ''), config.dashboardApiKey);
 }
