@@ -21,3 +21,15 @@ jobs:
         run: find src scripts -name '*.js' -print0 | xargs -0 -n1 node --check
       - name: Unit tests
         run: npm test
+
+  deploy:
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Render deploy
+        env:
+          HOOK: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        run: |
+          if [ -z "$HOOK" ]; then echo "::warning::RENDER_DEPLOY_HOOK_URL secret not set - skipping deploy"; exit 0; fi
+          curl -fsS -X POST "$HOOK"
