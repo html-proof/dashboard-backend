@@ -207,6 +207,17 @@ const dashboard = {
   }
 };
 
+// ALLOWED_ORIGINS entries may be exact ("https://app.vercel.app"), wildcard ("https://*.vercel.app") or "*".
+function originAllowed(origin) {
+  return config.allowedOrigins.some((allowed) => {
+    if (allowed === '*' || allowed === origin) return true;
+    const [prefix, suffix, extra] = allowed.split('*');
+    if (suffix === undefined || extra !== undefined) return false;
+    const middle = origin.slice(prefix.length, origin.length - suffix.length);
+    return origin.startsWith(prefix) && origin.endsWith(suffix) && /^[a-z0-9-]+$/.test(middle);
+  });
+}
+
 // ---- router --------------------------------------------------------------------------------
 export async function handle(request, response) {
   const requestId = randomUUID();
@@ -251,7 +262,7 @@ export async function handle(request, response) {
     if (path.startsWith('/api/')) {
       // Cross-origin access for the separately hosted dashboard frontend (e.g. Vercel).
       const origin = request.headers.origin;
-      if (origin && config.allowedOrigins.includes(origin)) {
+      if (origin && originAllowed(origin)) {
         response.setHeader('access-control-allow-origin', origin);
         response.setHeader('access-control-allow-credentials', 'true');
         response.setHeader('vary', 'origin');
