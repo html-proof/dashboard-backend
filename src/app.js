@@ -54,7 +54,11 @@ function readBody(request, limit = 1_000_000) {
 // Fixed-window rate limiter per client IP and bucket.
 const windows = new Map();
 function rateLimited(request, bucket, perMinute) {
-  const ip = request.socket.remoteAddress || 'unknown';
+  // Trusted server-side callers (the frontend proxy holding DASHBOARD_API_KEY) are not throttled.
+  if (config.dashboardApiKey && authorised(request)) return false;
+  // Behind Railway/Vercel proxies the socket address is the proxy's; use the forwarded client IP.
+  const forwarded = String(request.headers['x-forwarded-for'] || '').split(',')[0].trim();
+  const ip = forwarded || request.socket.remoteAddress || 'unknown';
   const key = `${bucket}:${ip}`; const now = Date.now();
   const entry = windows.get(key);
   if (!entry || entry.reset < now) { windows.set(key, { count: 1, reset: now + 60_000 }); return false; }
