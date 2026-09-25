@@ -1,0 +1,899 @@
+{
+  "info": {
+    "name": "Dashboard Backend (Railway)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Set apiKey to DASHBOARD_API_KEY. Date range: preset=today|yesterday|last_7_days|last_30_days|last_90_days|this_month|last_month|this_year… or start_date/end_date (YYYY-MM-DD)."
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{apiKey}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://dashboard-backend-production-e2fe.up.railway.app"
+    },
+    {
+      "key": "apiKey",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Root",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON body', () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": []
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        },
+        {
+          "name": "Health check",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON body', () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "health"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        },
+        {
+          "name": "No API key → 401",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 401', () => pm.response.to.have.status(401));",
+                  "pm.test('JSON body', () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "me"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Account & sync",
+      "item": [
+        {
+          "name": "Me",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON body', () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "me"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Status",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON body', () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "status"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Version",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON body', () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/version",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "version"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Run sync now",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON body', () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/sync",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "sync"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "item": [
+        {
+          "name": "overview",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON body', () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/overview?preset=last_30_days",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "dashboard",
+                "overview"
+              ],
+              "query": [
+                {
+                  "key": "preset",
+                  "value": "last_30_days"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "sales",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON body', () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/sales?preset=last_30_days",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "dashboard",
+                "sales"
+              ],
+              "query": [
+                {
+                  "key": "preset",
+                  "value": "last_30_days"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "orders",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON body', () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/orders?preset=last_30_days&status=all&limit=25&offset=0",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "dashboard",
+                "orders"
+              ],
+              "query": [
+                {
+                  "key": "preset",
+                  "value": "last_30_days"
+                },
+                {
+                  "key": "status",
+                  "value": "all"
+                },
+                {
+                  "key": "limit",
+                  "value": "25"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "customers",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON body', () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/customers?preset=last_30_days",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "dashboard",
+                "customers"
+              ],
+              "query": [
+                {
+                  "key": "preset",
+                  "value": "last_30_days"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "products",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON body', () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/products?preset=last_30_days",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "dashboard",
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "preset",
+                  "value": "last_30_days"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "inventory",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON body', () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/inventory?preset=last_30_days",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "dashboard",
+                "inventory"
+              ],
+              "query": [
+                {
+                  "key": "preset",
+                  "value": "last_30_days"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "refunds",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON body', () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/refunds?preset=last_30_days",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "dashboard",
+                "refunds"
+              ],
+              "query": [
+                {
+                  "key": "preset",
+                  "value": "last_30_days"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "fulfillment",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON body', () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/fulfillment?preset=last_30_days",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "dashboard",
+                "fulfillment"
+              ],
+              "query": [
+                {
+                  "key": "preset",
+                  "value": "last_30_days"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "staff",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON body', () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/staff?preset=last_30_days",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "dashboard",
+                "staff"
+              ],
+              "query": [
+                {
+                  "key": "preset",
+                  "value": "last_30_days"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "costs",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON body', () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/costs?preset=last_30_days",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "dashboard",
+                "costs"
+              ],
+              "query": [
+                {
+                  "key": "preset",
+                  "value": "last_30_days"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "salessources",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON body', () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/salessources?preset=last_30_days",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "dashboard",
+                "salessources"
+              ],
+              "query": [
+                {
+                  "key": "preset",
+                  "value": "last_30_days"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "profitreport",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON body', () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/profitreport?preset=last_30_days",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "dashboard",
+                "profitreport"
+              ],
+              "query": [
+                {
+                  "key": "preset",
+                  "value": "last_30_days"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "profit",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON body', () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/profit?preset=last_30_days",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "dashboard",
+                "profit"
+              ],
+              "query": [
+                {
+                  "key": "preset",
+                  "value": "last_30_days"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "funnel",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON body', () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/funnel?preset=last_30_days",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "dashboard",
+                "funnel"
+              ],
+              "query": [
+                {
+                  "key": "preset",
+                  "value": "last_30_days"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Costs",
+      "item": [
+        {
+          "name": "List costs",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON body', () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/costs",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "costs"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ad spend",
+      "item": [
+        {
+          "name": "List ad spend",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON body', () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/ad-spend?preset=last_30_days",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ad-spend"
+              ],
+              "query": [
+                {
+                  "key": "preset",
+                  "value": "last_30_days"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Staff",
+      "item": [
+        {
+          "name": "List staff",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON body', () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/staff",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "staff"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Integrations",
+      "item": [
+        {
+          "name": "List integrations",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON body', () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/integrations",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "integrations"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Annual plan",
+      "item": [
+        {
+          "name": "Get plan",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('JSON body', () => pm.response.to.be.json);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/plan?year=2026",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "plan"
+              ],
+              "query": [
+                {
+                  "key": "year",
+                  "value": "2026"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

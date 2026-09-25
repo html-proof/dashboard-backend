@@ -21,6 +21,8 @@ export const config = {
   port: Number(env.PORT || 3000),
   appUrl: (env.APP_URL || `http://localhost:${env.PORT || 3000}`).replace(/\/$/, ''),
   isProduction: env.NODE_ENV === 'production',
+  // Comma-separated origins allowed to call /api/* from a browser (e.g. https://your-app.vercel.app).
+  allowedOrigins: String(env.ALLOWED_ORIGINS || '').split(',').map((o) => o.trim().replace(/\/$/, '')).filter(Boolean),
   storefrontDomain: env.SHOPIFY_STOREFRONT_DOMAIN || null,
   shopify: {
     clientId: env.SHOPIFY_CLIENT_ID || '',

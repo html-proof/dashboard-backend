@@ -249,6 +249,17 @@ export async function handle(request, response) {
     }
 
     if (path.startsWith('/api/')) {
+      // Cross-origin access for the separately hosted dashboard frontend (e.g. Vercel).
+      const origin = request.headers.origin;
+      if (origin && config.allowedOrigins.includes(origin)) {
+        response.setHeader('access-control-allow-origin', origin);
+        response.setHeader('access-control-allow-credentials', 'true');
+        response.setHeader('vary', 'origin');
+        if (request.method === 'OPTIONS') {
+          response.writeHead(204, { 'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS', 'access-control-allow-headers': 'authorization, content-type', 'access-control-max-age': '86400' });
+          return response.end();
+        }
+      }
       if (rateLimited(request, 'api', 240)) return send(response, 429, { error: 'Too many requests', category: 'rate_limited' });
       if (path === '/api/logout' && request.method === 'POST') return send(response, 200, { ok: true }, { 'set-cookie': clearSessionCookie() });
       const signedIn = sessionShop(request);
@@ -340,7 +351,11 @@ export async function handle(request, response) {
       const content = await readFile(file);
       response.writeHead(200, { 'content-type': MIME[extname(file)] || 'application/octet-stream', ...SECURITY_HEADERS });
       return response.end(content);
-    } catch { return send(response, 404, { error: 'Not found' }); }
+    } catch {
+      // API-only deployments have no public/ folder: answer the root with a service description.
+      if (path === '/') return send(response, 200, { service: 'dashboard-backend', ok: true, health: '/api/health' });
+      return send(response, 404, { error: 'Not found' });
+    }
   } catch (error) {
     if (error instanceof OAuthError) { log.warn('oauth.rejected', { requestId, category: error.category }); return send(response, error.category === 'not_configured' ? 500 : 401, { error: error.message, category: error.category, requestId }); }
     if (error instanceof WebhookError) { log.warn('webhook.rejected', { requestId, status: error.status, error: error.message }); return send(response, error.status, { error: error.message }); }
